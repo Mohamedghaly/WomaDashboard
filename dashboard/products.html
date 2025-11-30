@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - Woma Admin</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body>
+    <div class="app-container">
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>🛍️ Woma</h2>
+                <p id="user-email">Admin</p>
+            </div>
+            <nav class="sidebar-nav">
+                <a href="dashboard.html" class="nav-link">
+                    <span class="icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+                <a href="products.html" class="nav-link active">
+                    <span class="icon">📦</span>
+                    <span>Products</span>
+                </a>
+                <a href="categories.html" class="nav-link">
+                    <span class="icon">📁</span>
+                    <span>Categories</span>
+                </a>
+                <a href="orders.html" class="nav-link">
+                    <span class="icon">🛒</span>
+                    <span>Orders</span>
+                </a>
+                <a href="#" class="nav-link" id="logout-btn">
+                    <span class="icon">🚪</span>
+                    <span>Logout</span>
+                </a>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="page-header">
+                <h1>Products</h1>
+                <button class="btn btn-primary" id="add-product-btn">➕ Add Product</button>
+            </header>
+
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-controls">
+                        <input type="search" id="search-input" placeholder="Search products..." class="search-input">
+                        <select id="category-filter" class="filter-select">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+
+                    <div id="products-table" class="table-container loading-state">
+                        <div class="spinner"></div>
+                        <p>Loading products...</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Add/Edit Product Modal -->
+    <div id="product-modal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="modal-title">Add Product</h2>
+                <button class="modal-close">&times;</button>
+            </div>
+            <form id="product-form">
+                <div class="form-group">
+                    <label for="product-name">Product Name *</label>
+                    <input type="text" id="product-name" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-category">Category *</label>
+                    <select id="product-category" required>
+                        <option value="">Select category</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-description">Description</label>
+                    <textarea id="product-description" rows="4"></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-price">Base Price *</label>
+                    <input type="number" id="product-price" step="0.01" min="0" required>
+                    <small style="color: var(--text-light);">Stock will be managed through variations</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="product-image">Image URL</label>
+                    <input type="url" id="product-image" placeholder="https://example.com/image.jpg">
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" id="product-active" checked>
+                        <span>Active</span>
+                    </label>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary modal-close">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Save Product</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Variations Modal -->
+    <div id="variations-modal" class="modal">
+        <div class="modal-content modal-lg">
+            <div class="modal-header">
+                <h2 id="variations-modal-title">Product Variations</h2>
+                <button class="modal-close" onclick="closeVariationsModal()">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <p id="product-name-display" style="color: var(--text-light); margin: 0;"></p>
+                    <button class="btn btn-primary btn-sm" onclick="openAddVariationForm()">➕ Add Variation</button>
+                </div>
+
+                <div id="variations-list" class="loading-state">
+                    <div class="spinner"></div>
+                    <p>Loading variations...</p>
+                </div>
+
+                <!-- Add Variation Form (hidden by default) -->
+                <div id="add-variation-form"
+                    style="display: none; margin-top: 24px; padding: 20px; background: var(--light); border-radius: 8px;">
+                    <h3 style="margin-bottom: 16px;">Add New Variation Combination</h3>
+                    <form id="variation-form">
+                        <!-- Attributes Section -->
+                        <div class="form-group">
+                            <label style="display: flex; justify-content: space-between; align-items: center;">
+                                <span>Attributes (e.g., Color + Size) *</span>
+                                <button type="button" class="btn btn-sm btn-primary" onclick="addAttributeField()"
+                                    style="margin: 0;">+ Add Attribute</button>
+                            </label>
+                            <div id="attributes-container" style="margin-top: 10px;">
+                                <!-- Initial attribute field -->
+                                <div class="form-row attr-field" style="margin-bottom: 8px;">
+                                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                                        <input type="text" class="attr-name" placeholder="Name (e.g., Color, Size)"
+                                            required>
+                                    </div>
+                                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                                        <input type="text" class="attr-value" placeholder="Value (e.g., Red, Large)"
+                                            required>
+                                    </div>
+                                    <button type="button" class="btn btn-sm btn-danger"
+                                        onclick="removeAttributeField(this)"
+                                        style="height: 42px; margin: 0;">Remove</button>
+                                </div>
+                            </div>
+                            <small style="color: var(--text-light);">Example: Color=Red, Size=Large → Creates "Red
+                                Large" variation with stock</small>
+                        </div>
+
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label for="var-price-adj">Price Adjustment</label>
+                                <input type="number" id="var-price-adj" step="0.01" value="0.00" placeholder="0.00">
+                                <small style="color: var(--text-light);">Extra price for this specific
+                                    combination</small>
+                            </div>
+                            <div class="form-group">
+                                <label for="var-stock">Stock Quantity *</label>
+                                <input type="number" id="var-stock" min="0" required>
+                                <small style="color: var(--text-light);">Stock for this specific combination</small>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="var-image">Image URL (optional)</label>
+                            <input type="url" id="var-image" placeholder="https://example.com/red-large.jpg">
+                        </div>
+
+                        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+                            <button type="button" class="btn btn-secondary"
+                                onclick="closeAddVariationForm()">Cancel</button>
+                            <button type="submit" class="btn btn-primary">Save Variation</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js?v=2"></script>
+    <script src="js/products.js?v=2"></script>
+</body>
+
+</html>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Woma Admin - Login</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+
+<body class="login-page">
+    <div class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <h1>🛍️ Woma Admin</h1>
+                <p>E-commerce Dashboard</p>
+            </div>
+
+            <div id="error-message" class="error-message" style="display: none;"></div>
+
+            <form id="login-form" class="login-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" name="email" placeholder="admin@woma.com" required
+                        value="admin@woma.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Password</label>
+                    <input type="password" id="password" name="password" placeholder="Enter your password" required
+                        value="admin123">
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-block" id="login-btn">
+                    <span>Sign In</span>
+                    <div class="spinner" style="display: none;"></div>
+                </button>
+            </form>
+
+            <div class="login-footer">
+                <p class="hint">Default: admin@woma.com / admin123</p>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/api.js?v=2"></script>
+    <script src="js/auth.js?v=2"></script>
+</body>
+
+</html>
