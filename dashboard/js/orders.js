@@ -78,6 +78,7 @@ function showOrderDetails(order) {
         <div style="margin-bottom: 24px;">
             <h3 style="margin-bottom: 12px;">Order #${order.id.substring(0, 8)}</h3>
             <p><strong>Customer:</strong> ${order.customer_email}</p>
+            <p><strong>Phone:</strong> ${order.customer_phone || 'N/A'}</p>
             <p><strong>Status:</strong> <span class="badge badge-${order.status}">${order.status}</span></p>
             <p><strong>Total:</strong> ${formatCurrency(order.total_amount)}</p>
             <p><strong>Date:</strong> ${formatDate(order.created_at)}</p>
@@ -102,11 +103,13 @@ function showOrderDetails(order) {
                             <td>${item.product_name}</td>
                             <td>
                                 ${item.variation_details ? `
-                                    ${item.variation_details.color || ''} 
-                                    ${item.variation_details.size || ''}
-                                    ${item.variation_details.material || ''}
-                                    <br><small style="color:var(--text-light)">SKU: ${item.variation_details.sku}</small>
-                                ` : 'Base Product'}
+                                    <div style="font-size: 0.9em;">
+                                        ${Object.entries(item.variation_details).map(([key, value]) =>
+        `<span class="badge badge-secondary" style="margin-right: 4px; font-weight: normal;">${key}: ${value}</span>`
+    ).join('')}
+                                    </div>
+                                    ${item.variation_name ? `<small style="color:var(--text-light); display:block; margin-top:4px;">${item.variation_name}</small>` : ''}
+                                ` : '<span class="text-muted">Base Product</span>'}
                             </td>
                             <td>${item.quantity}</td>
                             <td>${formatCurrency(item.price_at_purchase)}</td>
@@ -119,12 +122,15 @@ function showOrderDetails(order) {
 
         <div style="margin-bottom: 24px;">
             <h3 style="margin-bottom: 12px;">Update Status</h3>
-            <div style="display: flex; gap: 8px; flex-wrap: wrap;">
-                <button class="btn btn-sm btn-secondary" onclick="updateStatus('${order.id}', 'pending')">Pending</button>
-                <button class="btn btn-sm btn-primary" onclick="updateStatus('${order.id}', 'processing')">Processing</button>
-                <button class="btn btn-sm btn-success" onclick="updateStatus('${order.id}', 'completed')">Completed</button>
-                <button class="btn btn-sm btn-danger" onclick="updateStatus('${order.id}', 'cancelled')">Cancelled</button>
-            </div>
+            ${['completed', 'cancelled'].includes(order.status) ?
+            `<p class="text-muted">Status cannot be changed for ${order.status} orders.</p>` :
+            `<div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                    <button class="btn btn-sm btn-secondary" onclick="updateStatus('${order.id}', 'pending')" ${order.status === 'pending' ? 'disabled' : ''}>Pending</button>
+                    <button class="btn btn-sm btn-primary" onclick="updateStatus('${order.id}', 'processing')" ${order.status === 'processing' ? 'disabled' : ''}>Processing</button>
+                    <button class="btn btn-sm btn-success" onclick="updateStatus('${order.id}', 'completed')">Completed</button>
+                    <button class="btn btn-sm btn-danger" onclick="updateStatus('${order.id}', 'cancelled')">Cancelled</button>
+                </div>`
+        }
         </div>
 
         <div class="modal-footer">
@@ -147,7 +153,8 @@ async function updateStatus(orderId, status) {
         closeOrderModal();
         loadOrders();
     } catch (error) {
-        showError('Error updating order status');
+        const msg = error.status ? error.status[0] : (error.detail || 'Error updating order status');
+        showError(msg);
     }
 }
 

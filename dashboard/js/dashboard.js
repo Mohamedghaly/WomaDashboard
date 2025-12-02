@@ -8,30 +8,29 @@ let statsData = {
 
 async function loadDashboardStats() {
     try {
-        // Load products count
-        const products = await API.getProducts();
-        statsData.products = products.count || products.results?.length || 0;
-        document.getElementById('total-products').textContent = statsData.products;
+        // Load stats from dedicated endpoint
+        const stats = await API.getDashboardStats();
 
-        // Load categories count
-        const categories = await API.getCategories();
-        statsData.categories = categories.count || categories.results?.length || 0;
-        document.getElementById('total-categories').textContent = statsData.categories;
+        document.getElementById('total-products').textContent = stats.total_products;
+        document.getElementById('total-categories').textContent = stats.total_categories;
+        document.getElementById('total-orders').textContent = stats.total_orders;
+        document.getElementById('pending-orders').textContent = stats.pending_orders;
 
-        // Load orders
-        const orders = await API.getOrders();
-        statsData.orders = orders.count || orders.results?.length || 0;
-        document.getElementById('total-orders').textContent = statsData.orders;
+        // Update revenue and customers if elements exist
+        const revenueEl = document.getElementById('total-revenue');
+        if (revenueEl) revenueEl.textContent = formatCurrency(stats.total_revenue);
 
-        // Count pending orders
-        const ordersList = orders.results || orders;
-        statsData.pendingOrders = ordersList.filter(o => o.status === 'pending').length;
-        document.getElementById('pending-orders').textContent = statsData.pendingOrders;
+        const customersEl = document.getElementById('total-customers');
+        if (customersEl) customersEl.textContent = stats.total_customers;
 
         // Load recent orders
-        await loadRecentOrders(ordersList.slice(0, 5));
+        const ordersResponse = await API.getOrders({ page_size: 5 });
+        const recentOrders = ordersResponse.results || ordersResponse;
+        await loadRecentOrders(recentOrders);
+
     } catch (error) {
         console.error('Error loading dashboard stats:', error);
+        showError('Failed to load dashboard statistics');
     }
 }
 

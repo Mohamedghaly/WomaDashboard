@@ -12,7 +12,7 @@
     <div class="app-container">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h2>🛍️ Woma</h2>
+                <h2>🛍️ <span>Woma</span></h2>
                 <p id="user-email">Admin</p>
             </div>
             <nav class="sidebar-nav">
@@ -32,6 +32,10 @@
                     <span class="icon">🛒</span>
                     <span>Orders</span>
                 </a>
+                <a href="utilities.html" class="nav-link">
+                    <span class="icon">🛠️</span>
+                    <span>Utilities</span>
+                </a>
                 <a href="#" class="nav-link" id="logout-btn">
                     <span class="icon">🚪</span>
                     <span>Logout</span>
@@ -45,13 +49,9 @@
                 <button class="btn btn-primary" id="add-category-btn">➕ Add Category</button>
             </header>
 
-            <div class="card">
-                <div class="card-body">
-                    <div id="categories-grid" class="loading-state">
-                        <div class="spinner"></div>
-                        <p>Loading categories...</p>
-                    </div>
-                </div>
+            <div id="categories-grid" class="categories-grid loading-state">
+                <div class="spinner"></div>
+                <p>Loading categories...</p>
             </div>
         </main>
     </div>
@@ -64,16 +64,23 @@
                 <button class="modal-close">&times;</button>
             </div>
             <form id="category-form">
-                <div class="form-group">
-                    <label for="category-name">Category Name *</label>
-                    <input type="text" id="category-name" required>
-                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="category-name">📁 Category Name *</label>
+                        <input type="text" id="category-name" required placeholder="e.g. Summer Collection">
+                    </div>
 
-                <div class="form-group">
-                    <label for="category-description">Description</label>
-                    <textarea id="category-description" rows="4"></textarea>
-                </div>
+                    <div class="form-group">
+                        <label for="category-image">🖼️ Image URL</label>
+                        <input type="url" id="category-image" placeholder="https://example.com/category-image.jpg">
+                    </div>
 
+                    <div class="form-group">
+                        <label for="category-description">📝 Description</label>
+                        <textarea id="category-description" rows="3"
+                            placeholder="Brief description of this category..."></textarea>
+                    </div>
+                </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary modal-close">Cancel</button>
                     <button type="submit" class="btn btn-primary">Save Category</button>
@@ -82,8 +89,8 @@
         </div>
     </div>
 
-    <script src="js/api.js"></script>
-    <script src="js/categories.js"></script>
+    <script src="js/api.js?v=3"></script>
+    <script src="js/categories.js?v=2"></script>
 </body>
 
 </html>

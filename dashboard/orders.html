@@ -12,7 +12,7 @@
     <div class="app-container">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h2>🛍️ Woma</h2>
+                <h2>🛍️ <span>Woma</span></h2>
                 <p id="user-email">Admin</p>
             </div>
             <nav class="sidebar-nav">
@@ -31,6 +31,10 @@
                 <a href="orders.html" class="nav-link active">
                     <span class="icon">🛒</span>
                     <span>Orders</span>
+                </a>
+                <a href="utilities.html" class="nav-link">
+                    <span class="icon">🛠️</span>
+                    <span>Utilities</span>
                 </a>
                 <a href="#" class="nav-link" id="logout-btn">
                     <span class="icon">🚪</span>
@@ -67,19 +71,19 @@
 
     <!-- Order Details Modal -->
     <div id="order-modal" class="modal">
-        <div class="modal-content">
+        <div class="modal-content modal-lg">
             <div class="modal-header">
                 <h2>Order Details</h2>
                 <button class="modal-close">&times;</button>
             </div>
-            <div id="order-details" class="modal-body">
-                <!-- Order details will be loaded here -->
+            <div class="modal-body" id="order-details">
+                <!-- Content populated by JS -->
             </div>
         </div>
     </div>
 
-    <script src="js/api.js"></script>
-    <script src="js/orders.js"></script>
+    <script src="js/api.js?v=3"></script>
+    <script src="js/orders.js?v=4"></script>
 </body>
 
 </html>

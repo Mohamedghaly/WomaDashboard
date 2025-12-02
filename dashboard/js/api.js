@@ -35,6 +35,20 @@ class API {
                 return null;
             }
 
+            // Check content type
+            const contentType = response.headers.get('content-type');
+
+            // If response is HTML (error page), handle it
+            if (contentType && contentType.includes('text/html')) {
+                const htmlText = await response.text();
+                console.error('Server returned HTML error:', htmlText.substring(0, 500));
+                throw {
+                    status: response.status,
+                    message: `Server error (${response.status}). Check Django console for details.`,
+                    detail: 'The server returned an error page instead of JSON. This usually means a server-side error occurred.'
+                };
+            }
+
             const data = await response.json();
 
             if (!response.ok) {
@@ -69,6 +83,11 @@ class API {
 
     static async getProfile() {
         return this.request('/auth/profile/');
+    }
+
+    // Dashboard Stats
+    static async getDashboardStats() {
+        return this.request('/stats/');
     }
 
     // Categories
@@ -139,6 +158,13 @@ class API {
         });
     }
 
+    static async updateVariation(id, data) {
+        return this.request(`/admin/variations/${id}/`, {
+            method: 'PUT',
+            body: JSON.stringify(data)
+        });
+    }
+
     static async deleteVariation(id) {
         return this.request(`/admin/variations/${id}/`, {
             method: 'DELETE'
@@ -162,40 +188,121 @@ class API {
             body: JSON.stringify({ status })
         });
     }
+
+    // Utilities: Colors
+    static async getColors() {
+        return this.request('/colors/');
+    }
+
+    static async createColor(data) {
+        return this.request('/colors/', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+    }
+
+    static async updateColor(id, data) {
+        return this.request(`/colors/${id}/`, {
+            method: 'PUT',
+            body: JSON.stringify(data)
+        });
+    }
+
+    static async deleteColor(id) {
+        return this.request(`/colors/${id}/`, {
+            method: 'DELETE'
+        });
+    }
+
+    // Utilities: Sizes
+    static async getSizes() {
+        return this.request('/sizes/');
+    }
+
+    static async createSize(data) {
+        return this.request('/sizes/', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+    }
+
+    static async updateSize(id, data) {
+        return this.request(`/sizes/${id}/`, {
+            method: 'PUT',
+            body: JSON.stringify(data)
+        });
+    }
+
+    static async deleteSize(id) {
+        return this.request(`/sizes/${id}/`, {
+            method: 'DELETE'
+        });
+    }
+
+    // Utilities: Delivery Locations
+    static async getDeliveryLocations() {
+        return this.request('/delivery-locations/');
+    }
+
+    static async createDeliveryLocation(data) {
+        return this.request('/delivery-locations/', {
+            method: 'POST',
+            body: JSON.stringify(data)
+        });
+    }
+
+    static async updateDeliveryLocation(id, data) {
+        return this.request(`/delivery-locations/${id}/`, {
+            method: 'PUT',
+            body: JSON.stringify(data)
+        });
+    }
+
+    static async deleteDeliveryLocation(id) {
+        return this.request(`/delivery-locations/${id}/`, {
+            method: 'DELETE'
+        });
+    }
 }
 
 // Utility Functions
+function showToast(message, type = 'success') {
+    const toast = document.createElement('div');
+    toast.className = `toast toast-${type}`;
+
+    // Add icon based on type
+    const icon = type === 'success' ? '✅' : '⚠️';
+
+    toast.innerHTML = `
+        <span style="font-size: 18px;">${icon}</span>
+        <span>${message}</span>
+    `;
+
+    document.body.appendChild(toast);
+
+    // Remove after 3 seconds
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateY(-10px)';
+        toast.style.transition = 'all 0.3s ease';
+        setTimeout(() => toast.remove(), 300);
+    }, 3000);
+}
+
+function showSuccess(message) {
+    showToast(message, 'success');
+}
+
 function showError(message) {
+    // Also support legacy error div if present on login page
     const errorDiv = document.getElementById('error-message');
     if (errorDiv) {
         errorDiv.textContent = message;
         errorDiv.style.display = 'block';
-        setTimeout(() => {
-            errorDiv.style.display = 'none';
-        }, 5000);
-    } else {
-        alert(message);
+        errorDiv.className = 'error-message'; // Ensure it has style
+        return;
     }
-}
-
-function showSuccess(message) {
-    // Create toast notification
-    const toast = document.createElement('div');
-    toast.className = 'success-message';
-    toast.textContent = message;
-    toast.style.position = 'fixed';
-    toast.style.top = '20px';
-    toast.style.right = '20px';
-    toast.style.zIndex = '9999';
-    toast.style.padding = '16px 24px';
-    toast.style.borderRadius = '8px';
-    toast.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
-
-    document.body.appendChild(toast);
-
-    setTimeout(() => {
-        toast.remove();
-    }, 3000);
+    showToast(message, 'error');
 }
 
 function formatDate(dateString) {

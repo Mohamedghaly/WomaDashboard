@@ -12,7 +12,7 @@
     <div class="app-container">
         <aside class="sidebar">
             <div class="sidebar-header">
-                <h2>🛍️ Woma</h2>
+                <h2>🛍️ <span>Woma</span></h2>
                 <p id="user-email">Admin</p>
             </div>
             <nav class="sidebar-nav">
@@ -31,6 +31,10 @@
                 <a href="orders.html" class="nav-link">
                     <span class="icon">🛒</span>
                     <span>Orders</span>
+                </a>
+                <a href="utilities.html" class="nav-link">
+                    <span class="icon">🛠️</span>
+                    <span>Utilities</span>
                 </a>
                 <a href="#" class="nav-link" id="logout-btn">
                     <span class="icon">🚪</span>
@@ -71,39 +75,42 @@
                 <button class="modal-close">&times;</button>
             </div>
             <form id="product-form">
-                <div class="form-group">
-                    <label for="product-name">Product Name *</label>
-                    <input type="text" id="product-name" required>
-                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="product-name">📦 Product Name *</label>
+                        <input type="text" id="product-name" required placeholder="e.g. Premium Cotton T-Shirt">
+                    </div>
 
-                <div class="form-group">
-                    <label for="product-category">Category *</label>
-                    <select id="product-category" required>
-                        <option value="">Select category</option>
-                    </select>
-                </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="product-category">📁 Category *</label>
+                            <select id="product-category" required>
+                                <option value="">Select category</option>
+                            </select>
+                        </div>
 
-                <div class="form-group">
-                    <label for="product-description">Description</label>
-                    <textarea id="product-description" rows="4"></textarea>
-                </div>
+                        <div class="form-group">
+                            <label for="product-price">💰 Base Price *</label>
+                            <input type="number" id="product-price" step="0.01" min="0" required placeholder="0.00">
+                        </div>
+                    </div>
 
-                <div class="form-group">
-                    <label for="product-price">Base Price *</label>
-                    <input type="number" id="product-price" step="0.01" min="0" required>
-                    <small style="color: var(--text-light);">Stock will be managed through variations</small>
-                </div>
+                    <div class="form-group">
+                        <label for="product-image">🖼️ Image URL</label>
+                        <input type="url" id="product-image" placeholder="https://example.com/image.jpg">
+                    </div>
 
-                <div class="form-group">
-                    <label for="product-image">Image URL</label>
-                    <input type="url" id="product-image" placeholder="https://example.com/image.jpg">
-                </div>
+                    <div class="form-group">
+                        <label for="product-description">📝 Description</label>
+                        <textarea id="product-description" rows="4" placeholder="Enter product details..."></textarea>
+                    </div>
 
-                <div class="form-group">
-                    <label class="checkbox-label">
-                        <input type="checkbox" id="product-active" checked>
-                        <span>Active</span>
-                    </label>
+                    <div class="form-group">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="product-active" checked>
+                            <span>Active Status</span>
+                        </label>
+                    </div>
                 </div>
 
                 <div class="modal-footer">
@@ -145,20 +152,7 @@
                                     style="margin: 0;">+ Add Attribute</button>
                             </label>
                             <div id="attributes-container" style="margin-top: 10px;">
-                                <!-- Initial attribute field -->
-                                <div class="form-row attr-field" style="margin-bottom: 8px;">
-                                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                                        <input type="text" class="attr-name" placeholder="Name (e.g., Color, Size)"
-                                            required>
-                                    </div>
-                                    <div class="form-group" style="flex: 1; margin-bottom: 0;">
-                                        <input type="text" class="attr-value" placeholder="Value (e.g., Red, Large)"
-                                            required>
-                                    </div>
-                                    <button type="button" class="btn btn-sm btn-danger"
-                                        onclick="removeAttributeField(this)"
-                                        style="height: 42px; margin: 0;">Remove</button>
-                                </div>
+                                <!-- Attribute fields will be added here dynamically -->
                             </div>
                             <small style="color: var(--text-light);">Example: Color=Red, Size=Large → Creates "Red
                                 Large" variation with stock</small>
@@ -194,8 +188,8 @@
         </div>
     </div>
 
-    <script src="js/api.js?v=2"></script>
-    <script src="js/products.js?v=2"></script>
+    <script src="js/api.js?v=3"></script>
+    <script src="js/products.js?v=5"></script>
 </body>
 
 </html>
